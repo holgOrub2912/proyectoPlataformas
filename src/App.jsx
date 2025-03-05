@@ -1,37 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { Routes, Route, BrowserRouter } from 'react-router'
+import { useContext, useState } from 'react'
 import './style.css'
+import Header from './Header'
 import UserPanel from './UserPanel'
+import {RoleContext, optionContent} from './global'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [role, setRole] = useState(null);
 
   return (
-    <>
-    <UserPanel/>
-    {/*
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>UwU</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          numerito es {count}
-        </button>
-        
-      </div>
-      <p className="read-the-docs">
-        Hola Mundo, este es nuestro proyecto de plataformas.
-      </p>
-  */}
-    </>
+    <RoleContext.Provider value={role}>
+        <BrowserRouter>
+          <Header setRole={setRole}/>
+          <Routes>
+            <Route element={<UserPanel/>}>
+              <Route index element={<p></p>}/>
+              {Object.values(optionContent).map(({route, content}) => (
+                <Route key={route} path={route} element={<div className="content-area">{content}</div>}/>
+              ))}
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </RoleContext.Provider>
   )
 }
 
-export default App
+export default App;
