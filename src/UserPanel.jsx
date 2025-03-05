@@ -1,20 +1,22 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import RoleContext from './RoleConfig'
 
-const UserPanel = ({selectedTipoUsu, tiposUsuario}) => {
-
-    const [selectedOption, setSelectedOption] = useState(null);
+const UserPanel = ({tiposUsuario}) => {
   
-    const optionContent = {
-        'Ver Reportes': 'Reportes del sistema',
-        'Programacion': 'Panel de administración de fletes',
-        'Configuración': 'Ajustes del sistema',
-        'Mis rutas': 'Tus rutas recientes',
-        'Historial': 'Historial de actividades',
-        'Soporte': 'Formulario de soporte técnico',
-        'Productos': 'Catálogo de informacion',
-        'Contacto': 'Información de contacto'
-      };
-
+  const selectedTipoUsu = useContext(RoleContext);
+  console.log(selectedTipoUsu)
+  const [selectedOption, setSelectedOption] = useState(null);
+  
+  const optionContent = {
+      'Ver Reportes': 'Reportes del sistema',
+      'Programacion': 'Panel de administración de fletes',
+      'Configuración': 'Ajustes del sistema',
+      'Mis rutas': 'Tus rutas recientes',
+      'Historial': 'Historial de actividades',
+      'Soporte': 'Formulario de soporte técnico',
+      'Productos': 'Catálogo de informacion',
+      'Contacto': 'Información de contacto'
+    };
 
   return (
     selectedTipoUsu && (

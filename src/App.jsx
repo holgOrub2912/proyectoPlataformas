@@ -1,9 +1,9 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { Routes, Route, BrowserRouter } from 'react-router'
+import { useContext, useState } from 'react'
 import './style.css'
 import Header from './Header'
 import UserPanel from './UserPanel'
+import RoleContext from './RoleConfig'
 
 const tiposUsuario = {
   admin: ['Ver Reportes', 'Programacion', 'Configuración'],
@@ -11,17 +11,15 @@ const tiposUsuario = {
   invitado: ['Productos', 'Contacto']
 };
 
-
 function App() {
   const [role, setRole] = useState(null);
-  const possible_roles = ["admin", "cliente", "invitado"];
 
   return (
-    <>
+    <RoleContext.Provider value={role}>
 			<Header setRole={setRole} possibleRoles={tiposUsuario}/>
-	    <UserPanel tiposUsuario={tiposUsuario} selectedTipoUsu={role}/>
-    </>
+	    <UserPanel tiposUsuario={tiposUsuario}/>
+    </RoleContext.Provider>
   )
 }
 
-export default App
+export default App;
