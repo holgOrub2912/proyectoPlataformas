@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import { tiposUsuario } from './global'
 
-const Header = ({setRole, possibleRoles}) => {
+const Header = ({setRole}) => {
     const [botonDespliegueActivo, setEstaBotonDespliegueActivo] = useState(false);
 
     return (
@@ -14,7 +15,7 @@ const Header = ({setRole, possibleRoles}) => {
           
           {botonDespliegueActivo && (
             <div className="dropdown-menu">
-              {Object.keys(possibleRoles).map((usuTipoElegido) => (
+              {Object.keys(tiposUsuario).map((usuTipoElegido) => (
                 <button
                   key={usuTipoElegido}
                   onClick={() => {

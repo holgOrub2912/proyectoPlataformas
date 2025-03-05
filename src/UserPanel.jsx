@@ -1,5 +1,7 @@
 import React, { useContext, useState } from 'react'
-import RoleContext from './RoleConfig'
+import { Outlet, Link } from 'react-router'
+import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar'
+import { RoleContext, tiposUsuario, optionContent } from './global'
 
 const UserPanel = ({tiposUsuario}) => {
   
@@ -7,17 +9,19 @@ const UserPanel = ({tiposUsuario}) => {
   console.log(selectedTipoUsu)
   const [selectedOption, setSelectedOption] = useState(null);
   
-  const optionContent = {
-      'Ver Reportes': 'Reportes del sistema',
-      'Programacion': 'Panel de administración de fletes',
-      'Configuración': 'Ajustes del sistema',
-      'Mis rutas': 'Tus rutas recientes',
-      'Historial': 'Historial de actividades',
-      'Soporte': 'Formulario de soporte técnico',
-      'Productos': 'Catálogo de informacion',
-      'Contacto': 'Información de contacto'
-    };
+  return (
+    selectedTipoUsu && (
+      <div>
+        <Sidebar>
+          <Menu>
+            <MenuItem component={<Link to="/reportes"/>}>Reportes</MenuItem>
+          </Menu>
+        </Sidebar>
+        <Outlet/>
+      </div>
+  ));
 
+  /*
   return (
     selectedTipoUsu && (
       <div className="panel-container">
@@ -41,6 +45,7 @@ const UserPanel = ({tiposUsuario}) => {
         </div>
       </div>)
   );
+  */
 }
 
 export default UserPanel;
