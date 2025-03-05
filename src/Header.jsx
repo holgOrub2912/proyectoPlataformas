@@ -1,17 +1,18 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Link } from 'react-router'
-import { tiposUsuario } from './global'
+import { tiposUsuario, RoleContext } from './global'
 
 const Header = ({setRole}) => {
     const [botonDespliegueActivo, setEstaBotonDespliegueActivo] = useState(false);
+    const role = useContext(RoleContext);
 
     return (
-        <div className="dropdown">
+        <div className="header">
           <button 
             onClick={() => setEstaBotonDespliegueActivo(!botonDespliegueActivo)}
             className="dropdown-toggle"
           >
-            Selecciona tu tipo de usuario
+            { role ? (<>Rol: <b>{role}</b></>) : (<>Seleccionar rol</>)}
           </button>
           
           {botonDespliegueActivo && (
