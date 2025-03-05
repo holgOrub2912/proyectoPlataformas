@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router'
 import { tiposUsuario } from './global'
 
 const Header = ({setRole}) => {
@@ -16,17 +17,15 @@ const Header = ({setRole}) => {
           {botonDespliegueActivo && (
             <div className="dropdown-menu">
               {Object.keys(tiposUsuario).map((usuTipoElegido) => (
-                <button
+                <Link to="/"
                   key={usuTipoElegido}
                   onClick={() => {
                     setRole(usuTipoElegido);
                     setEstaBotonDespliegueActivo(false);
-                    // setSelectedOption(null);
                   }}
-                  className="dropdown-item"
-                >
-                  {usuTipoElegido.charAt(0).toUpperCase() + usuTipoElegido.slice(1)}
-                </button>
+                  className="dropdown-item">
+                    {usuTipoElegido.charAt(0).toUpperCase() + usuTipoElegido.slice(1)}
+                </Link>
               ))}
             </div>
           )}
