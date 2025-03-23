@@ -30,7 +30,7 @@ class Comprobante(SQLModel, table=True):
     id_usuario: int = Field(foreign_key="usuario.id")
 
     usuario: "Usuario" = Relationship(back_populates="comprobantes")
-    facturas: list["Facturas"] = Relationship(
+    facturas: list["Factura"] = Relationship(
         back_populates="comprobante"
     )
 
