@@ -1,10 +1,11 @@
-.container {
+  .header {
     padding: 20px;
-  }
-  
-  .dropdown {
-    position: relative;
-    margin-bottom: 20px;
+    display: flex;
+    width: 100vw;
+    box-sizing: border-box;
+    flex-direction: row;
+  	justify-content: flex-end;
+  	align-items: flex-end;
   }
   
   .dropdown-toggle {
@@ -18,8 +19,8 @@
   
   .dropdown-menu {
     position: absolute;
-    top: 100%;
-    left: 0;
+    top: 20px;
+    right: 0;
     background: white;
     border: 1px solid #ddd;
     border-radius: 5px;
