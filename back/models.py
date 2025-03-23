@@ -1,70 +1,49 @@
 #!/usr/bin/env python3
-from typing import List
-from database import engine
-from sqlalchemy import create_engine
-from sqlalchemy import String
-from sqlalchemy import DateTime
-from sqlalchemy import Integer
-from sqlalchemy import Float
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
 
-class Base(DeclarativeBase):
-    pass
+from sqlmodel import Field, Relationship, Session, SQLModel, create_engine
 
-class Usuario(Base):
-    __tablename__ = "usuarios"
+engine = create_engine("postgresql+psycopg2://postgres@localhost/jarana")
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    cedula: Mapped[int] = mapped_column(Integer())
-    nombre: Mapped[str] = mapped_column(String(30))
+class Usuario(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    cedula: int = Field(default=None)
+    nombre: str = Field(index=True)
 
-    comprobantes: Mapped[List["Comprobante"]] = relationship(
-        back_populates="usuario", cascade="all, delete-orphan"
+    comprobantes: list["Comprobante"] = Relationship(back_populates="usuario")
+
+class Factura(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    id_comprobante: int = Field(default=None, foreign_key="comprobante.id")
+
+    comprobante: "Comprobante" = Relationship(back_populates="facturas")
+    productos_facturados: list["ProductoFacturado"] = Relationship(
+        back_populates="factura"
     )
 
-    def __repr__(self) -> str:
-        return f"User(id={self.id!r}, nombre={self.name!r})"
+class Producto(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    nombre: str
+    precio: int
 
-class Factura(Base):
-    __tablename__ = "facturas"
-    id: Mapped[int] = mapped_column(primary_key=True)
-    id_comprobante: Mapped[int] = mapped_column(ForeignKey("comprobantes.id"))
+class Comprobante(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    id_usuario: int = Field(foreign_key="usuario.id")
 
-    comprobante: Mapped["Comprobante"] = relationship(back_populates="facturas")
-    productos_vendidos: Mapped[List["ProductoFacturado"]] = relationship()
-
-class Producto(Base):
-    __tablename__ = "productos"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    nombre: Mapped[str] = mapped_column(String(40))
-    precio: Mapped[int] = mapped_column(Float())
-
-class Comprobante(Base):
-    __tablename__ = "comprobantes"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    id_usuario: Mapped[int] = mapped_column(ForeignKey("usuarios.id"))
-
-    usuario: Mapped["User"] = relationship(back_populates="comprobantes")
-    facturas: Mapped[List["Facturas"]] = relationship(
-        back_populates="comprobante", cascade="all, delete-orphan"
+    usuario: "Usuario" = Relationship(back_populates="comprobantes")
+    facturas: list["Facturas"] = Relationship(
+        back_populates="comprobante"
     )
 
-class ProductoFacturado(Base):
-    __tablename__ = "producto_facturado"
-    id_producto: Mapped[int] = mapped_column(ForeignKey("productos.id")
+class ProductoFacturado(SQLModel, table=True):
+    id_producto: int = Field(foreign_key="producto.id"
                                             , primary_key=True)
-    id_factura: Mapped[int] = mapped_column(ForeignKey("facturas.id")
+    id_factura: int = Field(foreign_key="factura.id"
                                             , primary_key=True)
-    cantidad: Mapped[int] = mapped_column(Integer())
+    cantidad: int
 
-    producto: Mapped["Producto"] = relationship()
+    producto: "Producto" = Relationship()
+    factura: Factura = Relationship(back_populates="productos_facturados")
 
 if __name__ == "__main__":
-    Base.metadata.drop_all(engine)
-    Base.metadata.create_all(engine, checkfirst=False)
+    SQLModel.metadata.drop_all(engine)
+    SQLModel.metadata.create_all(engine)
