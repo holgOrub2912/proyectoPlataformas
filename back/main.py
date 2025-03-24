@@ -7,8 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from models import UsuarioBase, UsuarioCreate, Usuario, Comprobante \
-                 , Comprobante, Producto, Factura, FacturaCreate \
-                 , engine
+                 , Comprobante, ComprobanteOnReq, Producto, Factura \
+                 , FacturaCreate, engine
 from sqlmodel import Session, select
 from passlib.context import CryptContext
 from pydantic import BaseModel
@@ -154,9 +154,13 @@ async def create_comprobante(
     session.refresh(comprobante)
     return comprobante
 
-@app.get("/api/comprobantes", response_model=list[Comprobante])
-async def get_comprobantes():
-    return session.exec(select(Comprobante)).all()
+@app.get("/api/comprobantes", response_model=list[ComprobanteOnReq])
+async def get_comprobantes(
+    user: Annotated[Usuario, Depends(get_current_user)]):
+    return [ComprobanteOnReq.model_validate(comprobante)
+        for comprobante in session.exec(select(Comprobante)
+        .where(Comprobante.id_usuario == user.id
+    )).all()]
 
 # Endpoints de productos
 @app.get("/api/productos")

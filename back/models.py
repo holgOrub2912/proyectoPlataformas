@@ -26,6 +26,9 @@ class Factura(SQLModel, table=True):
         back_populates="factura"
     )
 
+class FacturaOnReq(SQLModel):
+    productos_facturados: list["ProductoFacturadoDetails"]
+
 class FacturaCreate(SQLModel):
     productos_facturados: list["ProductoFacturado"]
 
@@ -43,6 +46,9 @@ class Comprobante(SQLModel, table=True):
         back_populates="comprobante"
     )
 
+class ComprobanteOnReq(SQLModel):
+    facturas: list["FacturaOnReq"]
+
 class ProductoFacturado(SQLModel, table=True):
     id_producto: int = Field(foreign_key="producto.id"
                                             , primary_key=True)
@@ -52,6 +58,10 @@ class ProductoFacturado(SQLModel, table=True):
 
     producto: "Producto" = Relationship()
     factura: Factura = Relationship(back_populates="productos_facturados")
+
+class ProductoFacturadoDetails(SQLModel):
+    producto: Producto
+    cantidad: int
 
 class ProductoFacturadoCreateFromFact(SQLModel):
     id_producto: int
