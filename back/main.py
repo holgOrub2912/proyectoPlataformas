@@ -1,13 +1,36 @@
-from fastapi import FastAPI
+from typing import Annotated
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from models import UsuarioBase, UsuarioCreate, Usuario, Comprobante, engine
 from sqlmodel import Session, select
 
 app = FastAPI()
 session = Session(engine)
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/token")
+
 def fake_hash(s: str) -> str:
     return "fakehash" + s
+
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    user = session.exec(select(Usuario)
+        .where(Usuario.nombre == token[8:])
+    ).first()
+    return user
+
+# Login stuff
+
+@app.post("/api/token")
+async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+    user = session.exec(
+        select(Usuario)
+            .where(Usuario.nombre == form_data.username)
+            .where(Usuario.password_hash == fake_hash(form_data.password))
+    ).first()
+    if user is None:
+        raise HTTPException(status_code=400, detail="Credenciales de acceso incorrectos.")
+    return {"access_token": user.nombre, "token_type": "bearer"}
 
 # Endpoints de Usuario
 
@@ -33,7 +56,8 @@ async def create_user(usuario: UsuarioCreate):
 # Endpoints de comprobantes
 
 @app.post("/api/comprobantes")
-async def create_comprobante(comprobante: Comprobante):
+async def create_comprobante(comprobante: Comprobante,
+                             user: Annotated[Usuario, Depends(get_current_user)]):
     session.add(comprobante)
     session.commit()
     return comprobante
