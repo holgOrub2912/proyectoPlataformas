@@ -10,7 +10,7 @@ class UsuarioBase(SQLModel):
 
 class Usuario(UsuarioBase, table=True):
     id: int = Field(default=None, primary_key=True)
-    password_hash: str = Field(default=None)
+    password_hash: str
 
     comprobantes: list["Comprobante"] = Relationship(back_populates="usuario")
 
