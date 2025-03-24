@@ -4,12 +4,18 @@ from sqlmodel import Field, Relationship, Session, SQLModel, create_engine
 
 engine = create_engine("postgresql+psycopg2://postgres@localhost/jarana")
 
-class Usuario(SQLModel, table=True):
-    id: int = Field(default=None, primary_key=True)
-    cedula: int = Field(default=None)
+class UsuarioBase(SQLModel):
+    cedula: int
     nombre: str = Field(index=True)
 
+class Usuario(UsuarioBase, table=True):
+    id: int = Field(default=None, primary_key=True)
+    password_hash: str = Field(default=None)
+
     comprobantes: list["Comprobante"] = Relationship(back_populates="usuario")
+
+class UsuarioCreate(UsuarioBase):
+    password: str
 
 class Factura(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)

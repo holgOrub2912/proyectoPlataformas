@@ -1,14 +1,17 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from models import Usuario, Comprobante, engine
+from models import UsuarioBase, UsuarioCreate, Usuario, Comprobante, engine
 from sqlmodel import Session, select
 
 app = FastAPI()
 session = Session(engine)
 
+def fake_hash(s: str) -> str:
+    return "fakehash" + s
+
 # Endpoints de Usuario
 
-@app.get("/api/usuarios/{id}")
+@app.get("/api/usuarios/{id}", response_model=UsuarioBase)
 async def get_user(id: int):
     return session.exec(select(Usuario)
                         .where(Usuario.id == id)).first()
@@ -18,8 +21,12 @@ async def get_users():
     return session.exec(select(Usuario)).all()
 
 @app.post("/api/usuarios")
-async def create_user(usuario: Usuario):
-    session.add(usuario)
+async def create_user(usuario: UsuarioCreate):
+    session.add(Usuario.model_validate({
+        'cedula': usuario.cedula,
+        'nombre': usuario.nombre,
+        'password_hash': fake_hash(usuario.password)
+    }))
     session.commit()
     return usuario
 
