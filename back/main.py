@@ -5,8 +5,8 @@ from datetime import datetime, timedelta, timezone
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from models import UsuarioBase, UsuarioCreate, Usuario  \
-                 , Comprobante, Factura, FacturaCreate \
+from models import UsuarioBase, UsuarioCreate, Usuario, Comprobante \
+                 , Comprobante, Producto, Factura, FacturaCreate \
                  , engine
 from sqlmodel import Session, select
 from passlib.context import CryptContext
@@ -141,7 +141,11 @@ async def create_comprobante(
 @app.get("/api/comprobantes", response_model=list[Comprobante])
 async def get_comprobantes():
     return session.exec(select(Comprobante)).all()
-    
+
+# Endpoints de productos
+@app.get("/api/productos")
+async def get_productos() -> list[Producto]:
+    return session.exec(select(Producto)).all()
 
 # Mandar al front todas las requests que no son de la API
 app.mount("/", StaticFiles(directory="../front/dist"), name="frontend")
