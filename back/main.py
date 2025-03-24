@@ -5,7 +5,9 @@ from datetime import datetime, timedelta, timezone
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from models import UsuarioBase, UsuarioCreate, Usuario, Comprobante, engine
+from models import UsuarioBase, UsuarioCreate, Usuario  \
+                 , Comprobante, Factura, FacturaCreate \
+                 , engine
 from sqlmodel import Session, select
 from passlib.context import CryptContext
 from pydantic import BaseModel
@@ -122,10 +124,18 @@ async def create_user(usuario: UsuarioCreate):
 # Endpoints de comprobantes
 
 @app.post("/api/comprobantes")
-async def create_comprobante(comprobante: Comprobante,
-                             user: Annotated[Usuario, Depends(get_current_user)]):
+async def create_comprobante(
+    facturas: list[FacturaCreate],
+    user: Annotated[Usuario, Depends(get_current_user)]
+) -> Comprobante:
+    comprobante = Comprobante(
+        facturas = [Factura.model_validate(factura)
+            for factura in facturas],
+        id_usuario = user.id
+    )
     session.add(comprobante)
     session.commit()
+    session.refresh(comprobante)
     return comprobante
 
 @app.get("/api/comprobantes", response_model=list[Comprobante])

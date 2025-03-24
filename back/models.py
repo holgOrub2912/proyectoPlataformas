@@ -26,6 +26,9 @@ class Factura(SQLModel, table=True):
         back_populates="factura"
     )
 
+class FacturaCreate(SQLModel):
+    productos_facturados: list["ProductoFacturado"]
+
 class Producto(SQLModel, table=True):
     id: int = Field(primary_key=True)
     nombre: str
@@ -49,6 +52,10 @@ class ProductoFacturado(SQLModel, table=True):
 
     producto: "Producto" = Relationship()
     factura: Factura = Relationship(back_populates="productos_facturados")
+
+class ProductoFacturadoCreateFromFact(SQLModel):
+    id_producto: int
+    cantidad: int
 
 if __name__ == "__main__":
     SQLModel.metadata.drop_all(engine)
