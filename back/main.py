@@ -50,6 +50,8 @@ def authenticate_user(username: str, password: str):
         select(Usuario)
             .where(Usuario.nombre == username)
     ).first()
+    if not user:
+        return False
     if not verify_password(password, user.password_hash):
         return False
     return user
