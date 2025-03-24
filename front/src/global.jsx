@@ -1,4 +1,5 @@
 import { createContext } from 'react'
+import Rutas from './Rutas'
 
 export const tiposUsuario = {
   admin: ['Ver Reportes', 'Programacion', 'Configuración'],
@@ -23,7 +24,7 @@ export const optionContent = {
     },
     'Mis rutas': { 
       route: '/rutas',
-      content: 'Tus rutas recientes',
+      content: <Rutas/>
     },
     'Historial': { 
       route: '/historial',

@@ -3,6 +3,7 @@ import jwt
 from jwt.exceptions import InvalidTokenError
 from datetime import datetime, timedelta, timezone
 from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from models import UsuarioBase, UsuarioCreate, Usuario, Comprobante \
@@ -26,8 +27,20 @@ if len(secret_key) == 0:
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
+origins = [
+    "http://localhost:5173"
+]
+
 app = FastAPI()
 session = Session(engine)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -65,8 +78,9 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, secret_key, algorithm=ALGORITHM)
 
+@app.get("/api/whoami")
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-    creentials_exception = HTTPException(
+    credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="No se pudieron validar los credenciales",
         headers={"WWW-Authenticate": "Bearer"},
@@ -77,7 +91,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         if username is None:
             raise credentials_exception
     except InvalidTokenError:
-        raise credentials_exceptions
+        raise credentials_exception
     user = session.exec(select(Usuario)
         .where(Usuario.nombre == username)
     ).first()

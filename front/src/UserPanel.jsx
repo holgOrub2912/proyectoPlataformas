@@ -7,8 +7,8 @@ const UserPanel = () => {
   const selectedTipoUsu = useContext(RoleContext);
   
   return (
-    selectedTipoUsu && (
-      <div className="panel-container">
+    <div className="panel-container">
+    {selectedTipoUsu && (
         <Sidebar>
           <Menu>
             {tiposUsuario[selectedTipoUsu].map(opt => (
@@ -16,9 +16,10 @@ const UserPanel = () => {
             ))}
           </Menu>
         </Sidebar>
-        {selectedTipoUsu && <Outlet/>}
+      )}
+      <Outlet/>
       </div>
-  ));
+  );
 
 }
 
