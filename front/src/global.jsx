@@ -1,9 +1,10 @@
 import { createContext } from 'react'
-import Rutas from './Rutas'
+import GenerarComprobante from './GenerarComprobante'
+import Comprobantes from './Comprobantes'
 
 export const tiposUsuario = {
   admin: ['Ver Reportes', 'Programacion', 'Configuración'],
-  cliente: ['Mis rutas', 'Historial', 'Soporte'],
+  cliente: ['Comprobantes', 'Generar Comprobante', 'Historial', 'Soporte'],
   invitado: ['Productos', 'Contacto']
 };
 
@@ -22,9 +23,13 @@ export const optionContent = {
       route: '/configuracion',
       content: 'Ajustes del sistema',
     },
-    'Mis rutas': { 
+    'Comprobantes': {
+      route: '/comprobantes',
+      content: <Comprobantes/>
+    },
+    'Generar Comprobante': { 
       route: '/rutas',
-      content: <Rutas/>
+      content: <GenerarComprobante/>
     },
     'Historial': { 
       route: '/historial',

@@ -58,7 +58,7 @@ const post_comprobante = async (facturas) => {
   }
 }
 
-const Rutas = () => {
+const GenerarComprobante = () => {
   const [products, setProducts] = useState([])
   const [facturas, setFacturas] = useState([])
 
@@ -84,4 +84,4 @@ const Rutas = () => {
   </div>
 }
 
-export default Rutas;
+export default GenerarComprobante;
