@@ -1,10 +1,11 @@
 import { createContext } from 'react'
+import Login from './Login'
 import GenerarComprobante from './GenerarComprobante'
 import Comprobantes from './Comprobantes'
 
 export const tiposUsuario = {
   admin: ['Ver Reportes', 'Programacion', 'Configuración'],
-  cliente: ['Comprobantes', 'Generar Comprobante', 'Historial', 'Soporte'],
+  cliente: ['Iniciar Sesion', 'Comprobantes', 'Generar Comprobante', 'Historial', 'Soporte'],
   invitado: ['Productos', 'Contacto']
 };
 
@@ -22,6 +23,10 @@ export const optionContent = {
     'Configuración': { 
       route: '/configuracion',
       content: 'Ajustes del sistema',
+    },
+    'Iniciar Sesion': {
+      route: '/login',
+      content: <Login/>
     },
     'Comprobantes': {
       route: '/comprobantes',

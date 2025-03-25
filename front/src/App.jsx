@@ -1,6 +1,6 @@
 import { Routes, Route, BrowserRouter } from 'react-router'
 import { useContext, useState } from 'react'
-import Login from './Login'
+import Register from './Register'
 import './style.css'
 import Header from './Header'
 import UserPanel from './UserPanel'
@@ -16,8 +16,8 @@ function App() {
           <Header setRole={setRole}/>
           <Routes>
             <Route element={<UserPanel/>}>
-              <Route key="/login" path={"/login"} element={<Login/>}/>
               <Route index element={<p></p>}/>
+              <Route key="/registro" path="/registro" element={<Register/>} />
               {Object.values(optionContent).map(({route, content}) => (
                 <Route key={route} path={route} element={<div className="content-area">{content}</div>}/>
               ))}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router'
 import API_URL from './api'
 
 const Login = () => {
@@ -18,6 +19,7 @@ const Login = () => {
       })
       if (response.ok){
         localStorage.setItem("auth_token", (await response.json()).access_token)
+        alert("Sesión iniciada correctamente")
       }
     } catch (e) {
       console.log(e);
@@ -29,6 +31,7 @@ const Login = () => {
     <input value={nombre} onChange={e => setNombre(e.target.value)} type="text"/>
     <input type='password' value={password} onChange={e => setPassword(e.target.value)}/>
     <button onClick={loginAttempt}>Iniciar Sesión</button>
+    <Link to="/registro">Registrarse</Link>
   </div>)
 }
 
