@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from models import UsuarioBase, UsuarioCreate, Usuario, Comprobante \
                  , Comprobante, ComprobanteOnReq, Producto, Factura \
-                 , FacturaCreate, engine
+                 , FacturaCreate, engine, UserRole
 from sqlmodel import Session, select
 from passlib.context import CryptContext
 from pydantic import BaseModel
@@ -97,6 +97,22 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     ).first()
     return user
 
+async def get_current_driver(user: Annotated[Usuario, Depends(get_current_user)]):
+    if user.role != UserRole.DRIVER:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Sólo usuarios de de rol conductor están autorizados a acceder a este recurso."
+        )
+    return user
+
+async def get_current_admin(user: Annotated[Usuario, Depends(get_current_user)]):
+    if user.role != UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Sólo usuarios de rol admin están autorizados a acceder a este recurso."
+        )
+    return user
+
 # Login stuff
 
 @app.post("/api/token")
@@ -131,6 +147,7 @@ async def get_users():
 async def create_user(usuario: UsuarioCreate):
     session.add(Usuario.model_validate({
         'cedula': usuario.cedula,
+        'role': usuario.role,
         'nombre': usuario.nombre,
         'password_hash': get_password_hash(usuario.password)
     }))
@@ -142,7 +159,7 @@ async def create_user(usuario: UsuarioCreate):
 @app.post("/api/comprobantes")
 async def create_comprobante(
     facturas: list[FacturaCreate],
-    user: Annotated[Usuario, Depends(get_current_user)]
+    user: Annotated[Usuario, Depends(get_current_driver)]
 ) -> Comprobante:
     comprobante = Comprobante(
         facturas = [Factura.model_validate(factura)
@@ -156,7 +173,7 @@ async def create_comprobante(
 
 @app.get("/api/comprobantes", response_model=list[ComprobanteOnReq])
 async def get_comprobantes(
-    user: Annotated[Usuario, Depends(get_current_user)]):
+    user: Annotated[Usuario, Depends(get_current_driver)]):
     return [ComprobanteOnReq.model_validate(comprobante)
         for comprobante in session.exec(select(Comprobante)
         .where(Comprobante.id_usuario == user.id

@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 
-from sqlmodel import Field, Relationship, Session, SQLModel, create_engine
+from sqlmodel import Field, Relationship, Session, SQLModel, create_engine, Enum, Column
+import enum
 
 engine = create_engine("postgresql+psycopg2://postgres@localhost/jarana")
 
+class UserRole(enum.Enum):
+    DRIVER = 0
+    ADMIN = 1
+
 class UsuarioBase(SQLModel):
     cedula: int
+    role: UserRole = Field(sa_column=Column(Enum(UserRole), default=UserRole.DRIVER))
     nombre: str = Field(index=True)
 
 class Usuario(UsuarioBase, table=True):
