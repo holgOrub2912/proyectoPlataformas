@@ -48,6 +48,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 class Token(BaseModel):
     access_token: str
     token_type: str
+    user: Usuario
 
 def fake_hash(s: str) -> str:
     return "fakehash" + s
@@ -130,7 +131,7 @@ async def login_for_access_token(
     access_token = create_access_token(
         data={"sub": user.nombre}, expires_delta=access_token_expires
     )
-    return Token(access_token=access_token, token_type="bearer")
+    return Token(access_token=access_token, token_type="bearer", user=user)
 
 # Endpoints de Usuario
 
@@ -173,11 +174,12 @@ async def create_comprobante(
 
 @app.get("/api/comprobantes", response_model=list[ComprobanteOnReq])
 async def get_comprobantes(
-    user: Annotated[Usuario, Depends(get_current_driver)]):
+    user: Annotated[Usuario, Depends(get_current_user)]):
+    query = select(Comprobante)
+    if user.role == UserRole.DRIVER:
+        query = query.where(Comprobante.id_usuario == user.id)
     return [ComprobanteOnReq.model_validate(comprobante)
-        for comprobante in session.exec(select(Comprobante)
-        .where(Comprobante.id_usuario == user.id
-    )).all()]
+        for comprobante in session.exec(query).all()]
 
 # Endpoints de productos
 @app.get("/api/productos")

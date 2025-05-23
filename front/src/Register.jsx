@@ -5,6 +5,7 @@ import API_URL from './api'
 const Register = () => {
   const [nombre, setNombre] = useState('')
   const [cedula, setCedula] = useState('')
+  const [isAdmin, setIsAdmin] = useState(false)
   const [password, setPassword] = useState('')
 
   const navigate = useNavigate();
@@ -25,7 +26,8 @@ const Register = () => {
         body: JSON.stringify({
           nombre: nombre,
           cedula: cedula,
-          password: password
+          password: password,
+          role: (isAdmin ? 1 : 0)
         })
       })
       if (response.ok)
@@ -39,6 +41,7 @@ const Register = () => {
     <input placeholder="Nombre" type="text" value={nombre} onChange={e => setNombre(e.target.value)}/>
     <input placeholder="cedula" type="cedula" value={cedula} onChange={e => setCedulaIfInt(e.target.value)}/>
     <input placeholder="Contraseña" type="password" value={password} onChange={e => setPassword(e.target.value)}/>
+    <input value={isAdmin} onChange={e => setIsAdmin(e.target.value)} type="checkbox"/>
     <button onClick={post_user}>Registrarse</button>
   </div>
   

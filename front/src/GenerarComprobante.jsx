@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import API_URL from './api'
+import { useAuth } from './Auth'
 
 const replace = (arr, index, by) => arr.map((e, i) => (i == index) ? by : e)
 const replace_attr = (arr, index, attr, by) =>
@@ -41,14 +42,14 @@ const FacturaBox = ({availableProducts
   
 }
 
-const post_comprobante = async (facturas) => {
+const post_comprobante = async (facturas, token) => {
   console.log(JSON.stringify(facturas))
   try {
     const response = await fetch(`${API_URL}/comprobantes`, {
       method: 'POST',
       mode: 'cors',
       headers: {
-        "Authorization": "Bearer " + localStorage.getItem("auth_token"),
+        "Authorization": "Bearer " + token,
         "Content-Type": "application/json"
       },
       body: JSON.stringify(facturas)
@@ -61,6 +62,7 @@ const post_comprobante = async (facturas) => {
 const GenerarComprobante = () => {
   const [products, setProducts] = useState([])
   const [facturas, setFacturas] = useState([])
+  const { token } = useAuth()
 
   const retrieve_products = async () => {
     const response = await fetch(`${API_URL}/productos`);
@@ -80,7 +82,7 @@ const GenerarComprobante = () => {
     <hr/></div>
   )}</div>
   <button onClick={e => setFacturas([...facturas, {productos_facturados: []}])}>+</button>
-  <button onClick={e => post_comprobante(facturas)}>Enviar</button>
+  <button onClick={e => post_comprobante(facturas, token)}>Enviar</button>
   </div>
 }
 

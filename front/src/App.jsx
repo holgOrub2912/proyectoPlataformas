@@ -5,15 +5,13 @@ import './style.css'
 import Header from './Header'
 import UserPanel from './UserPanel'
 import {RoleContext, optionContent} from './global'
+import AuthProvider from './Auth'
 
 function App() {
-  const [role, setRole] = useState('cliente');
-  const [user, setUser] = useState(null);
-
   return (
-    <RoleContext.Provider value={role}>
+    <AuthProvider>
         <BrowserRouter>
-          <Header setRole={setRole}/>
+          <Header/>
           <Routes>
             <Route element={<UserPanel/>}>
               <Route index element={<p></p>}/>
@@ -24,7 +22,7 @@ function App() {
             </Route>
           </Routes>
         </BrowserRouter>
-      </RoleContext.Provider>
+      </AuthProvider>
   )
 }
 

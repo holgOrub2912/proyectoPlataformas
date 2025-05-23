@@ -54,6 +54,7 @@ class Comprobante(SQLModel, table=True):
 
 class ComprobanteOnReq(SQLModel):
     facturas: list["FacturaOnReq"]
+    usuario: "Usuario"
 
 class ProductoFacturado(SQLModel, table=True):
     id_producto: int = Field(foreign_key="producto.id"

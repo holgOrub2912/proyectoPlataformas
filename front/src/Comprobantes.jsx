@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react'
+import { useAuth } from './Auth'
 
 import API_URL from './api'
 
@@ -37,12 +38,13 @@ const Comprobante = ({facturas}) => {
 
 const Comprobantes = () => {
   const [comprobantes, setComprobantes] = useState([])
+  const { token } = useAuth()
 
   const retrieve_comprobantes = async () => {
     try {
       const response = await fetch(`${API_URL}/comprobantes`, {
         headers: {
-          "Authorization": "Bearer " + localStorage.getItem("auth_token"),
+          "Authorization": "Bearer " + token
         }
       });
       if (response.ok)
@@ -55,6 +57,7 @@ const Comprobantes = () => {
   useEffect(() => {
     retrieve_comprobantes()
   }, [])
+  console.log(comprobantes)
 
   return <>{comprobantes.map((c,i) => <Comprobante key={i} facturas={c.facturas}/>)}</>
 }

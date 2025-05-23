@@ -1,37 +1,26 @@
 import { useState, useContext } from 'react'
 import { Link } from 'react-router'
 import { tiposUsuario, RoleContext } from './global'
+import {  useAuth } from './Auth'
 
 const Header = ({setRole}) => {
-    const [botonDespliegueActivo, setEstaBotonDespliegueActivo] = useState(false);
-    const role = useContext(RoleContext);
+  const { user, logOut } = useAuth();
+  const loginBtn = <Link className="button" to="/login">Iniciar Sesión</Link>;
+  const logoutBtn = <button onClick={logOut}>Cerrar Sesión</button>
 
-    return (
-        <div className="header">
-          <button 
-            onClick={() => setEstaBotonDespliegueActivo(!botonDespliegueActivo)}
-            className="dropdown-toggle"
-          >
-            { role ? (<>Rol: <b>{role}</b></>) : (<>Seleccionar rol</>)}
-          </button>
-          
-          {botonDespliegueActivo && (
-            <div className="dropdown-menu">
-              {Object.keys(tiposUsuario).map((usuTipoElegido) => (
-                <Link to="/"
-                  key={usuTipoElegido}
-                  onClick={() => {
-                    setRole(usuTipoElegido);
-                    setEstaBotonDespliegueActivo(false);
-                  }}
-                  className="dropdown-item">
-                    {usuTipoElegido.charAt(0).toUpperCase() + usuTipoElegido.slice(1)}
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-    );
+  return (
+      <div className="header">
+        {user
+          ? <>
+            <span>{user.nombre}</span>
+            {user.role == 1 && <span>(Admin)</span>}
+            {logoutBtn}
+          </>
+          : <>
+            {loginBtn}
+          </>}
+      </div>
+  );
 }
 
 export default Header;

@@ -2,12 +2,18 @@ import { createContext } from 'react'
 import Login from './Login'
 import GenerarComprobante from './GenerarComprobante'
 import Comprobantes from './Comprobantes'
+import AllComprobantes from './AllComprobantes'
 
-export const tiposUsuario = {
-  admin: ['Ver Reportes', 'Programacion', 'Configuración'],
-  cliente: ['Iniciar Sesion', 'Comprobantes', 'Generar Comprobante', 'Historial', 'Soporte'],
-  invitado: ['Productos', 'Contacto']
-};
+export const COP = new Intl.NumberFormat('es-CO', {
+  style: 'currency',
+  currency: 'COP',
+});
+
+export const tiposUsuario = [
+  ['Comprobantes', 'Generar Comprobante', 'Soporte'],
+  ['Comprobantes Generados', 'Programacion', 'Configuración'],
+  ['Productos', 'Contacto']
+]
 
 
 export const RoleContext = createContext(null);
@@ -47,6 +53,10 @@ export const optionContent = {
     'Productos': { 
       route: '/productos',
       content: 'Catálogo de informacion',
+    },
+    'Comprobantes Generados': {
+      route: '/gencomprobantes',
+      content: <AllComprobantes/>
     },
     'Contacto': { 
       route: '/contacto',
