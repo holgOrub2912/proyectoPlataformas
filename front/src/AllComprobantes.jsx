@@ -29,6 +29,7 @@ const AllComprobantes = ({}) => {
       });
       if (response.ok){
         setComprobantes((await response.json()).map(comprobante => ({
+          dia: comprobante.dia,
           nombreUsuario: comprobante.usuario.nombre,
           cedulaUsuario: comprobante.usuario.cedula,
           precio: COP.format(totalPrice(comprobante)),
@@ -48,28 +49,48 @@ const AllComprobantes = ({}) => {
 
   const columns = [
     {
+      title: 'Fecha',
+      dataIndex: 'dia',
+      key: 'dia',
+    },
+    {
       title: 'Conductor',
       dataIndex: 'nombreUsuario',
+      className: 'py-1',
       key: 'nombreUsuario',
+      width: 200
     },
     {
       title: 'Cédula',
       dataIndex: 'cedulaUsuario',
       key: 'cedulaUsuario',
+      className: 'hidden md:block',
+      width: 100
     },
     {
       title: 'Total facturado',
       dataIndex: 'precio',
       key: 'precio',
+      width: 200,
     },
     {
       title: 'Productos Facturados',
       dataIndex: 'productos',
       key: 'productos',
+      className: 'hidden md:block',
+      width: 50
     },
   ];
 
-  return <Table columns={columns} data={comprobantes}/>
+  return <div className="flex justify-center">
+    <Table
+      className="text-center"
+      columns={columns}
+      data={comprobantes}
+      title={(comprobantes) => <h1 className="text-xl font-bold">{comprobantes.length} comprobantes mostrados</h1>}
+      rowClassName={(c,i) => "border-t-1 " + ((i % 2 == 1) ? " bg-gray-100" : "")}
+    />
+  </div>
 };
 
 export default AllComprobantes;
