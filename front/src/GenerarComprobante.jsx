@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import {getInfo} from './global'
 import API_URL from './api'
 import { useAuth } from './Auth'
 
@@ -20,10 +21,21 @@ const ProductBox = ({ availableProducts
 }
 
 const FacturaBox = ({availableProducts
+                   , availablePuntos
+                   , id_punto
+                   , setPunto
                    , productosFacturados
                    , setProductosFacturados}) => {
 
-  return <div><div>{productosFacturados.map((p, i) =>
+  return <div>
+      <label>
+        Punto de venta
+        <select value={id_punto}
+                onChange={e => setPunto(parseInt(e.target.value))}>{availablePuntos.map(p => 
+          <option value={p.id} key={p.id}>{p.nombre}</option>
+        )}</select>
+      </label>
+    <div>{productosFacturados.map((p, i) =>
     <ProductBox availableProducts={availableProducts}
                 key={i}
                 selId={p.id_producto}
@@ -62,6 +74,7 @@ const post_comprobante = async (facturas, token) => {
 const GenerarComprobante = () => {
   const [products, setProducts] = useState([])
   const [facturas, setFacturas] = useState([])
+  const [puntos, setPuntos] = useState([])
   const { token } = useAuth()
 
   const retrieve_products = async () => {
@@ -70,18 +83,21 @@ const GenerarComprobante = () => {
       setProducts(await response.json())
   }
 
-  useEffect(() => {retrieve_products()}, []);
+  useEffect(() => {retrieve_products(); getInfo('puntos', setPuntos);}, []);
 
   return <div><div>{facturas.map((f, i) => <div key={i}>
     <FacturaBox key={i}
                 availableProducts={products}
                 productosFacturados={f.productos_facturados}
-                setProductosFacturados={prods => setFacturas(replace(
-                  facturas, i, ({productos_facturados: prods})
-                ))}/>
+                id_punto={f.id_punto}
+                availablePuntos={puntos}
+                setPunto={id => setFacturas(replace_attr(facturas, i, 'id_punto', id))}
+                setProductosFacturados={prods => setFacturas(replace_attr(
+                  facturas, i, 'productos_facturados', prods))}
+                />
     <hr/></div>
   )}</div>
-  <button onClick={e => setFacturas([...facturas, {productos_facturados: []}])}>+</button>
+  <button onClick={e => setFacturas([...facturas, {id_punto: 1, productos_facturados: []}])}>+</button>
   <button onClick={e => post_comprobante(facturas, token)}>Enviar</button>
   </div>
 }

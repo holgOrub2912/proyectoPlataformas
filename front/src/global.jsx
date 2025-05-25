@@ -2,7 +2,11 @@ import { createContext } from 'react'
 import Login from './Login'
 import GenerarComprobante from './GenerarComprobante'
 import Comprobantes from './Comprobantes'
+import Rutas from './Rutas'
 import AllComprobantes from './AllComprobantes'
+import Productos from './Productos'
+import Reportes from './Reportes'
+import API_URL from './api'
 
 export const COP = new Intl.NumberFormat('es-CO', {
   style: 'currency',
@@ -10,17 +14,17 @@ export const COP = new Intl.NumberFormat('es-CO', {
 });
 
 export const tiposUsuario = [
-  ['Comprobantes', 'Generar Comprobante', 'Soporte'],
-  ['Comprobantes Generados', 'Programacion', 'Configuración'],
+  ['Mis Rutas', 'Comprobantes', 'Generar Comprobante', 'Soporte'], // Driver
+  ['Rutas', 'Comprobantes Generados', 'Productos', 'Reportes'], // Admin
   ['Productos', 'Contacto']
 ]
 
 
 export const RoleContext = createContext(null);
 export const optionContent = {
-    'Ver Reportes': { 
+    'Reportes': { 
       route: '/reportes',
-      content: 'Reportes del sistema',
+      content: <Reportes/>,
     },
     'Programacion': { 
       route: '/programacion',
@@ -39,7 +43,7 @@ export const optionContent = {
       content: <Comprobantes/>
     },
     'Generar Comprobante': { 
-      route: '/rutas',
+      route: '/addcomprobante',
       content: <GenerarComprobante/>
     },
     'Historial': { 
@@ -52,14 +56,60 @@ export const optionContent = {
     },
     'Productos': { 
       route: '/productos',
-      content: 'Catálogo de informacion',
+      content: <Productos/>
     },
     'Comprobantes Generados': {
       route: '/gencomprobantes',
       content: <AllComprobantes/>
     },
-    'Contacto': { 
+    'Contacto': {
       route: '/contacto',
       content: 'Información de contacto'
     },
+    'Rutas': {
+      route: '/rutas',
+      content: <Rutas/>
+    },
+    'Mis Rutas': {
+      route: '/rutas',
+      content: <Rutas/>
+    }
+};
+
+export const getInfo = async(endpoint, callback, token) => {
+  try {
+    const response = await fetch(`${API_URL}/${endpoint}`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && {"Authorization": "Bearer " + token})
+      },
+    });
+    if (response.ok)
+      callback(await response.json())
+    else
+      throw Error("Error al obtener información del servidor.")
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const postInfo = async(endpoint, obj, token, callback) => {
+  try {
+    const response = await fetch(`${API_URL}/${endpoint}`, {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && {"Authorization": "Bearer " + token})
+      },
+      body: JSON.stringify(obj)
+    })
+    if (response.ok && callback)
+      callback(await response.json());
+    else
+      throw Error('Error al crear el objeto.')
+  } catch (e) {
+    console.log(e)
+  }
 };
