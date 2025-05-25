@@ -290,5 +290,11 @@ async def get_day_ruta(
             detail="No se pudo encontrar la ruta especificada"
         )
 
+# Endpoints de punto de ruta
+
+@app.get("/api/puntos")
+async def get_puntos() -> list[Punto]:
+    return session.exec(select(Punto)).all()
+
 # Mandar al front todas las requests que no son de la API
 app.mount("/", StaticFiles(directory="../front/dist"), name="frontend")
