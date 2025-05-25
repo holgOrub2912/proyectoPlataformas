@@ -57,6 +57,7 @@ const Rutas = ({}) => {
   const [rutas, setRutas] = useState([]);
   const [puntos, setPuntos] = useState([]);
   const [nuevaRuta, dispatch] = useReducer(nuevaRutaReducer, null);
+  const [visibleMenus, setVisibleMenus] = useState([]);
 
   const retrieveInfo = async(endpoint, callback) => {
     try {
@@ -99,18 +100,33 @@ const Rutas = ({}) => {
                    onChange={e => dispatch({type: 'change_nombre',
                                             text: e.target.value})}
                    placeholder='Nombre de ruta'/>;
+
   const nuevaRutaPuntosInpts = nuevaRuta &&
     nuevaRuta.puntos.map((p,i) => <Combobox
-                key={i}
-                dataKey='id'
-                value={p.nombre}
-                data={puntos}
-                textField='nombre'
-                onChange={value => dispatch({type: 'change_punto',
-                                             id: value.id || null,
-                                             index: i,
-                                             nombre: value.nombre || value})}
-                />)
+                  key={i*2 + 1*visibleMenus[i]}
+                  hideEmptyPopup
+                  onFocus={() => setVisibleMenus(visibleMenus.with(i, true))}
+                  onBlur={() => setVisibleMenus(visibleMenus.with(i, false))}
+                  placeholder="Punto"
+                  hideCaret
+                  listProps={visibleMenus[i]
+                    ? {className: "absolute bg-white text-md shadow-xl"}
+                    : {className: "hidden"}
+                  }
+                  renderListItem={({item}) => (
+                    <div className="hover:cursor-pointer hover:bg-gray-100 px-2 py-1">
+                      {visibleMenus[i] && item.nombre}
+                    </div>
+                  )}
+                  dataKey='id'
+                  value={p.nombre}
+                  data={puntos}
+                  textField='nombre'
+                  onChange={value => dispatch({type: 'change_punto',
+                                               id: value.id || null,
+                                               index: i,
+                                               nombre: value.nombre || value})}
+                  />);
 
   return <>
     <div>
@@ -130,7 +146,7 @@ const Rutas = ({}) => {
       {user.role == 1 && nuevaRuta
         ? <div>
             <RutaPath nombre={nuevaRutaNombreInpt} puntos={nuevaRutaPuntosInpts}/>
-            <button onClick={() => dispatch({type: 'add_punto'})}>
+            <button onClick={() => {setVisibleMenus([...visibleMenus, true]); dispatch({type: 'add_punto'})}}>
               Añadir punto
             </button>
             <button onClick={() => guardarRuta()}>Guardar ruta</button>
