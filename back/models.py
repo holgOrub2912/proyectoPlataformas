@@ -62,6 +62,7 @@ class Comprobante(SQLModel, table=True):
 
 class ComprobanteOnReq(SQLModel):
     facturas: list["FacturaOnReq"]
+    dia: date
     usuario: "Usuario"
 
 class ProductoFacturado(SQLModel, table=True):

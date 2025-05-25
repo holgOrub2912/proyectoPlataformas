@@ -192,6 +192,7 @@ async def get_comprobantes(
     query = select(Comprobante)
     if user.role == UserRole.DRIVER:
         query = query.where(Comprobante.id_usuario == user.id)
+    query = query.order_by(Comprobante.dia.desc())
     return [ComprobanteOnReq.model_validate(comprobante)
         for comprobante in session.exec(query).all()]
 
