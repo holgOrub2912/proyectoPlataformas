@@ -29,11 +29,27 @@ const nuevaRutaReducer = (nuevaRuta, action) => {
   }
 };
 
-const RutaPath = ({ruta: {nombre, puntos}, dia}) => {
-  return <>
-    <h3>Ruta {nombre} {dia && <span>dia</span>}</h3>
-    {puntos.map((p, i) => <span key={i}>{p.nombre}</span>)}
-  </>
+const RutaPath = ({puntos, nombre}) => {
+  return <div className="m-2">
+    <h3 className="text-xl font-bold">{nombre}</h3>
+    <div className="flex flex-wrap flex-col md:flex-row items-end">
+      {puntos.map((p, i) => <div
+        className="md:py-3 flex md:flex-col"
+        key={i}
+      >
+        <div className="text-lg font-thin py-2 px-10">{p}</div>
+        <div className="flex flex-col md:flex-row items-center">
+          <div
+            className="border-r-3 h-1/2 md:border-b-3 md:w-1/2 border-lime-200"
+          />
+          <div className="h-3 w-3 border-3 rounded-full border-lime-200"/>
+          <div
+            className="border-l-3 h-1/2 md:border-b-3 md:w-1/2 border-lime-200"
+          />
+        </div>
+      </div>)}
+    </div>
+  </div>
 }
 
 const Rutas = ({}) => {
@@ -78,23 +94,13 @@ const Rutas = ({}) => {
     retrieveInfo('puntos', setPuntos);
   }, []);
 
-  return <>
-    <div>
-      {rutas.length > 0 
-        ? rutas.map((ruta, i) =>
-          <RutaPath key={i} ruta={ruta.ruta || ruta} dia={ruta.dia}/>)
-        : <h2>No hay rutas para mostrar</h2>}
-    </div>
-    <div>
-      {user.role == 1 && nuevaRuta
-        ? <div>
-            <input type='text'
+  const nuevaRutaNombreInpt = nuevaRuta && <input type='text'
                    value={nuevaRuta.nombre}
                    onChange={e => dispatch({type: 'change_nombre',
                                             text: e.target.value})}
-                   placeholder='Nombre de ruta'/>
-            <div>
-              {nuevaRuta.puntos.map((p,i) => <Combobox
+                   placeholder='Nombre de ruta'/>;
+  const nuevaRutaPuntosInpts = nuevaRuta &&
+    nuevaRuta.puntos.map((p,i) => <Combobox
                 key={i}
                 dataKey='id'
                 value={p.nombre}
@@ -104,14 +110,30 @@ const Rutas = ({}) => {
                                              id: value.id || null,
                                              index: i,
                                              nombre: value.nombre || value})}
-              />)}
-            </div>
-          <div>
+                />)
+
+  return <>
+    <div>
+      {rutas.length > 0 
+        ? rutas.map((ruta, i) =>
+          <RutaPath
+            key={i}
+            nombre={ruta.ruta ? ruta.ruta.nombre : ruta.nombre}
+            puntos={(ruta.ruta
+              ? ruta.ruta.puntos
+              : ruta.puntos).map(({nombre}) => nombre)
+              }
+          />)
+        : <h2>No hay rutas para mostrar</h2>}
+    </div>
+    <div>
+      {user.role == 1 && nuevaRuta
+        ? <div>
+            <RutaPath nombre={nuevaRutaNombreInpt} puntos={nuevaRutaPuntosInpts}/>
             <button onClick={() => dispatch({type: 'add_punto'})}>
               Añadir punto
             </button>
             <button onClick={() => guardarRuta()}>Guardar ruta</button>
-          </div>
           </div>
         : <button onClick={() => dispatch({type: 'create'})}>+</button>}
     </div>
