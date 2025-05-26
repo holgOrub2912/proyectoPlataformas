@@ -102,7 +102,7 @@ class PuntoEnRuta(SQLModel, table=True):
 
 class RutaUsuarioEnlace(SQLModel, table=True):
     id_ruta: int = Field(default=None, foreign_key="ruta.id", primary_key=True)
-    id_usuario: int = Field(default=None, foreign_key="punto.id", primary_key=True)
+    id_usuario: int = Field(default=None, foreign_key="usuario.id", primary_key=True)
     dia: date = Field(primary_key=True)
 
     ruta: "Ruta" = Relationship()
