@@ -33,8 +33,7 @@ const Productos = ({}) => {
 
   const inputClasses = "my-1 mx-2";
 
-  const newProductRow = products.length > 0
-  ? {id: -1,
+  const newProductRow = {id: -1,
      nombre: <input value={newProductName}
                     placeholder="Nombre"
                     className={inputClasses}
@@ -45,7 +44,6 @@ const Productos = ({}) => {
                     placeholder="Precio"
                     className={inputClasses}
                     type='text'/>}
-  : {};
 
   const columns = [
     {
