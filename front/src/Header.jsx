@@ -1,13 +1,21 @@
 import { useState, useContext } from 'react'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { tiposUsuario, RoleContext } from './global'
 import {  useAuth } from './Auth'
-import { Bars3Icon, ArrowUturnLeftIcon } from '@heroicons/react/24/solid'
+import { Bars3Icon, ArrowUturnLeftIcon, ArrowRightIcon } from '@heroicons/react/24/solid'
 
 const Header = ({setRole, toggleSidebar}) => {
   const { user, logOut } = useAuth();
-  const loginBtn = <Link className="button" to="/login">Iniciar Sesión</Link>;
-  const logoutBtn = <button onClick={logOut}>
+  const navigate = useNavigate();
+  const logOutAndNav = () => {
+    logOut();
+    navigate("/");
+  };
+  const loginBtn = <Link className="button block md:ml-2" to="/login">
+    <span className="hidden md:inline">Iniciar Sesión</span>
+    <ArrowRightIcon className="inline md:ml-2 size-4"/>
+  </Link>;
+  const logoutBtn = <button onClick={logOutAndNav}>
     <span className="hidden md:inline">Cerrar Sesión</span>
     <ArrowUturnLeftIcon className="inline md:ml-2 size-4"/>
   </button>
