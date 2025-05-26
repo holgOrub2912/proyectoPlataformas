@@ -108,6 +108,7 @@ class Ruta(SQLModel, table=True):
     puntos: list[PuntoEnRuta] = Relationship(back_populates="ruta")
 
 class RutaOnReq(SQLModel):
+    id: int
     nombre: str
     puntos: list["Punto"]
 

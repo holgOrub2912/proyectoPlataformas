@@ -241,7 +241,8 @@ async def create_ruta(
 @app.get("/api/rutas")
 async def get_rutas() -> list[RutaOnReq]:
     query = select(Ruta)
-    return [RutaOnReq(nombre=r.nombre,
+    return [RutaOnReq(id=r.id,
+                      nombre=r.nombre,
                       puntos=[p.punto for p in
                       sorted(r.puntos, key=lambda p: p.pos)])
               for r in session.exec(query).all()]
@@ -266,6 +267,7 @@ async def get_assigned_rutas(
     return [RutaUsuarioEnlaceOnReq(
         dia=re.dia,
         ruta=RutaOnReq(
+            id=re.ruta.id,
             nombre=re.ruta.nombre,
             puntos=[p.punto for p in sorted(re.ruta.puntos, key=lambda p: p.pos)])
         ) for re in session.exec(query).all()]
@@ -281,6 +283,7 @@ async def get_day_ruta(
     try:
         ruta = session.exec(query).one().ruta
         return RutaOnReq(
+            id=ruta.id,
             nombre=ruta.nombre,
             puntos=[p.punto for p in sorted(ruta.puntos, key=lambda p: p.pos)]
         )
