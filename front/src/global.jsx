@@ -6,6 +6,7 @@ import Rutas from './Rutas'
 import AllComprobantes from './AllComprobantes'
 import Productos from './Productos'
 import Reportes from './Reportes'
+import Soporte from './Soporte'
 import API_URL from './api'
 
 export const COP = new Intl.NumberFormat('es-CO', {
@@ -52,7 +53,7 @@ export const optionContent = {
     },
     'Soporte': { 
       route: '/soporte',
-      content: 'Formulario de soporte técnico',
+      content: <Soporte/>
     },
     'Productos': { 
       route: '/productos',
