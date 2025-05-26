@@ -88,7 +88,7 @@ const AllComprobantes = ({}) => {
       columns={columns}
       data={comprobantes}
       title={(comprobantes) => <h1 className="text-xl font-bold">{comprobantes.length} comprobantes mostrados</h1>}
-      rowClassName={(c,i) => "border-t-1 " + ((i % 2 == 1) ? " bg-gray-100" : "")}
+      rowClassName={(c,i) => "border-gray border-t-1 " + ((i % 2 == 1) ? " bg-gray-100" : "")}
     />
   </div>
 };
