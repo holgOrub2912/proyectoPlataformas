@@ -47,6 +47,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 class Token(BaseModel):
     access_token: str
     token_type: str
+    expires_in: int
     user: Usuario
 
 def fake_hash(s: str) -> str:
@@ -131,7 +132,7 @@ async def login_for_access_token(
     access_token = create_access_token(
         data={"sub": user.nombre}, expires_delta=access_token_expires
     )
-    return Token(access_token=access_token, token_type="bearer", user=user)
+    return Token(access_token=access_token, expires_in = ACCESS_TOKEN_EXPIRE_MINUTES * 60, token_type="bearer", user=user)
 
 # Endpoints de Usuario
 

@@ -3,6 +3,7 @@ import {getInfo} from './global'
 import API_URL from './api'
 import { useAuth } from './Auth'
 import moment from 'moment';
+import { useNavigate } from 'react-router';
 import { DocumentCurrencyDollarIcon, PlusIcon } from '@heroicons/react/24/solid';
 
 const TIMEZONE = import.meta.env.VITE_TIMEZONE;
@@ -90,6 +91,10 @@ const GenerarComprobante = () => {
   const [facturas, setFacturas] = useState([])
   const [puntos, setPuntos] = useState([])
   const { user, token } = useAuth()
+
+  const navigate = useNavigate();
+  if (!user || user.role != 0)
+    navigate("/login");
 
   const retrieve_products = async () => {
     const response = await fetch(`${API_URL}/productos`);

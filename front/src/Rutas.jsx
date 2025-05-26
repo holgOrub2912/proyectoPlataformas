@@ -5,6 +5,7 @@ import moment from 'moment';
 import { TruckIcon } from '@heroicons/react/24/solid';
 import AssignRouteDialog from './AssignRouteDialog';
 import Combobox from 'react-widgets/Combobox';
+import {useNavigate} from 'react-router';
 
 const TIMEZONE = import.meta.env.VITE_TIMEZONE;
 
@@ -64,6 +65,10 @@ const Rutas = ({}) => {
   const [nuevaRuta, dispatch] = useReducer(nuevaRutaReducer, null);
   const [visibleMenus, setVisibleMenus] = useState([]);
   const [assigningRoute, setAssigningRoute] = useState(null);
+  const navigate = useNavigate();
+
+  if (!user)
+    navigate("/login");
 
   const retrieveInfo = async(endpoint, callback) => {
     try {
