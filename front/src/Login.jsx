@@ -9,12 +9,16 @@ const Login = () => {
 
   const { logIn } = useAuth();
 
-  return (<div className="login">
-    <h2>Iniciar Sesión</h2>
-    <input value={nombre} onChange={e => setNombre(e.target.value)} type="text"/>
-    <input type='password' value={password} onChange={e => setPassword(e.target.value)}/>
-    <button onClick={() => logIn(nombre, password)}>Iniciar Sesión</button>
-    <Link to="/registro">Registrarse</Link>
+  return (<div className="login flex flex-col w-full items-center justify-center">
+    <div className="flex flex-col w-75">
+      <h2 className="text-xl font-thin text-center">Iniciar Sesión</h2>
+      <div className="flex flex-col w-75">
+        <input className="m-2" value={nombre} placeholder="Nombre" onChange={e => setNombre(e.target.value)} type="text"/>
+        <input className="m-2" type='password' placeholder="Contraseña" value={password} onChange={e => setPassword(e.target.value)}/>
+      </div>
+      <button onClick={() => logIn(nombre, password)}>Iniciar Sesión</button>
+      <Link className="text-lime-400 font-bold m-2 text-center hover:text-gray-400" to="/registro">Registrarse</Link>
+    </div>
   </div>)
 }
 
