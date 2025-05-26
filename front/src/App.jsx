@@ -8,7 +8,7 @@ import {RoleContext, optionContent} from './global'
 import AuthProvider from './Auth'
 
 function App() {
-  const [sidebarToggled, setSidebarToggled] = useState(true);
+  const [sidebarToggled, setSidebarToggled] = useState(false);
   const toggleSidebar = () => {
     console.log(`Setting sidebar to ${!sidebarToggled}`)
     setSidebarToggled(!sidebarToggled)
