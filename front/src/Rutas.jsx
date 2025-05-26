@@ -1,6 +1,9 @@
 import API_URL from './api';
 import {useState, useEffect, useReducer} from 'react';
 import { useAuth } from './Auth';
+import moment from 'moment';
+import { TruckIcon } from '@heroicons/react/24/solid';
+import AssignRouteDialog from './AssignRouteDialog';
 import Combobox from 'react-widgets/Combobox';
 
 const nuevaRutaReducer = (nuevaRuta, action) => {
@@ -58,6 +61,7 @@ const Rutas = ({}) => {
   const [puntos, setPuntos] = useState([]);
   const [nuevaRuta, dispatch] = useReducer(nuevaRutaReducer, null);
   const [visibleMenus, setVisibleMenus] = useState([]);
+  const [assigningRoute, setAssigningRoute] = useState(null);
 
   const retrieveInfo = async(endpoint, callback) => {
     try {
@@ -95,6 +99,11 @@ const Rutas = ({}) => {
     retrieveInfo('puntos', setPuntos);
   }, []);
 
+  const todaysRoute = user.role == 0 &&
+  rutas.filter(({dia}) =>
+    moment().isSame(dia, 'day')
+  )[0];
+
   const nuevaRutaNombreInpt = nuevaRuta && <input type='text'
                    value={nuevaRuta.nombre}
                    onChange={e => dispatch({type: 'change_nombre',
@@ -129,12 +138,30 @@ const Rutas = ({}) => {
                   />);
 
   return <>
+    <AssignRouteDialog
+      ruta={assigningRoute}
+      close={() => setAssigningRoute(null)}
+      isOpen={assigningRoute}
+      onRequestClose={() => setAssigningRoute(null)}
+    />
     <div>
       {rutas.length > 0 
         ? rutas.map((ruta, i) =>
           <RutaPath
             key={i}
-            nombre={ruta.ruta ? ruta.ruta.nombre : ruta.nombre}
+            nombre={
+              <div className="flex flex-nowrap justify-between">
+                <div>{ruta.ruta ? ruta.ruta.nombre : ruta.nombre}</div>
+                {ruta.dia && moment().isSame(ruta.dia, 'day') &&
+                  <div className="text-2xl font-thin">Ruta de hoy</div>
+                }
+                {ruta.ruta
+                  ? <span className="font-thin">({ruta.dia})</span>
+                  : <button onClick={() => setAssigningRoute(ruta)}
+                            className="mx-5">Asignar</button>
+                }
+              </div>
+            }
             puntos={(ruta.ruta
               ? ruta.ruta.puntos
               : ruta.puntos).map(({nombre}) => nombre)
@@ -151,7 +178,7 @@ const Rutas = ({}) => {
             </button>
             <button onClick={() => guardarRuta()}>Guardar ruta</button>
           </div>
-        : <button onClick={() => dispatch({type: 'create'})}>+</button>}
+        : <button hidden={user.role == 0} onClick={() => dispatch({type: 'create'})}>+</button>}
     </div>
   </>
 };
