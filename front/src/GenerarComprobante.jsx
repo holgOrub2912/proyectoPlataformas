@@ -106,7 +106,7 @@ const GenerarComprobante = () => {
     retrieve_products();
     const today = moment.utc().add(TIMEZONE, 'hours').format("YYYY-MM-DD")
     getInfo(`assignedRoutes/${user.id}/${today}`,
-      ({puntos}) => setPuntos(puntos));
+      (rutas) => setPuntos([...(new Set(rutas.map(r => r.puntos).flat()))]));
     }, []);
 
   return <div><div className="flex mb-5 items-stretch flex-wrap flex-row">

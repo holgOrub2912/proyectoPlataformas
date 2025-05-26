@@ -277,17 +277,17 @@ async def get_assigned_rutas(
 async def get_day_ruta(
     user_id: int,
     day: date
-) -> RutaOnReq:
+) -> list[RutaOnReq]:
     query = select(RutaUsuarioEnlace) \
         .where(RutaUsuarioEnlace.id_usuario == user_id) \
         .where(RutaUsuarioEnlace.dia == day)
     try:
-        ruta = session.exec(query).one().ruta
-        return RutaOnReq(
+        rutas = (enlace.ruta for enlace in session.exec(query).all())
+        return [RutaOnReq(
             id=ruta.id,
             nombre=ruta.nombre,
             puntos=[p.punto for p in sorted(ruta.puntos, key=lambda p: p.pos)]
-        )
+        ) for ruta in rutas]
     except NoResultFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
