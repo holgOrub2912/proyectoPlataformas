@@ -3,8 +3,17 @@
 from sqlmodel import Field, Relationship, Session, SQLModel, create_engine, Enum, Column
 from datetime import date
 import enum
+import os
 
-engine = create_engine("postgresql+psycopg2://postgres@localhost/jarana")
+db_host = os.getenv("DB_HOST")
+if db_host is None:
+    db_host = "localhost"
+
+db_pass = os.getenv("DB_PASSWORD")
+if db_pass is None:
+    db_pass = ""
+
+engine = create_engine(f"postgresql+psycopg2://postgres:{db_pass}@{db_host}/jarana")
 
 class UserRole(enum.Enum):
     DRIVER = 0
@@ -119,6 +128,8 @@ class RutaCreate(SQLModel):
 class Punto(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     nombre: str = Field(default=None)
+
+SQLModel.metadata.create_all(engine)
 
 if __name__ == "__main__":
     SQLModel.metadata.drop_all(engine)

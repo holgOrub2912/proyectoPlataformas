@@ -1,0 +1,25 @@
+version: '3'
+services:
+  back:
+    build:
+      context: back
+    environment:
+      DB_HOST: db
+      DB_PASSWORD: jaranapassword
+    depends_on:
+      - db
+  front:
+    build:
+      context: front
+      args:
+        VITE_SUPPORT_PAGE: "${SUPPORT_PAGE}"
+    ports:
+      - "80:80"
+    depends_on:
+      - back
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_PASSWORD: jaranapassword
+      POSTGRES_USER: postgres
+      POSTGRES_DB: jarana
