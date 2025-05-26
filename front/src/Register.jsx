@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useId } from 'react'
 import { useNavigate } from 'react-router-dom'
 import API_URL from './api'
 
@@ -37,11 +37,18 @@ const Register = () => {
     }
   }
 
-  return <div>
-    <input placeholder="Nombre" type="text" value={nombre} onChange={e => setNombre(e.target.value)}/>
-    <input placeholder="cedula" type="cedula" value={cedula} onChange={e => setCedulaIfInt(e.target.value)}/>
-    <input placeholder="Contraseña" type="password" value={password} onChange={e => setPassword(e.target.value)}/>
-    <input value={isAdmin} onChange={e => setIsAdmin(e.target.value)} type="checkbox"/>
+  const isAdminId = useId();
+
+  return <div className="flex flex-col w-full items-center">
+    <h2 className="text-xl font-thin text-center">
+      Registrar un nuevo usuario
+    </h2>
+    <input className="m-2" placeholder="Nombre" type="text" value={nombre} onChange={e => setNombre(e.target.value)}/>
+    <input className="m-2" placeholder="Cédula" type="cedula" value={cedula} onChange={e => setCedulaIfInt(e.target.value)}/>
+    <input className="m-2" placeholder="Contraseña" type="password" value={password} onChange={e => setPassword(e.target.value)}/>
+    <label className="m-2" htmlFor={isAdminId}>Administrador: 
+      <input id={isAdminId} className="m-2" value={isAdmin} onChange={e => setIsAdmin(e.target.value)} type="checkbox"/>
+    </label>
     <button onClick={post_user}>Registrarse</button>
   </div>
   
