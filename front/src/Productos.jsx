@@ -7,7 +7,7 @@ import Table from 'rc-table';
 const Productos = ({}) => {
   const {user, token} = useAuth();
   const [products, setProducts] = useState([]);
-  const [addingProduct, setAddingProduct] = useState(true);
+  const [addingProduct, setAddingProduct] = useState(false);
   const [newProductName, setNewProductName] = useState('');
   const [newProductPrice, setNewProductPrice] = useState('');
 
@@ -31,7 +31,7 @@ const Productos = ({}) => {
     getInfo('productos', setAndFormatProducts);
   }, []);
 
-  const inputClasses = "py-1 px-5 my-1 mx-2 focus:border-0 border-b-2 border-gray-700 outline-lime-100";
+  const inputClasses = "my-1 mx-2";
 
   const newProductRow = products.length > 0
   ? {id: -1,
