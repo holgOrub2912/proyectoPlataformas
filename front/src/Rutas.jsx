@@ -6,6 +6,8 @@ import { TruckIcon } from '@heroicons/react/24/solid';
 import AssignRouteDialog from './AssignRouteDialog';
 import Combobox from 'react-widgets/Combobox';
 
+const TIMEZONE = import.meta.env.VITE_TIMEZONE;
+
 const nuevaRutaReducer = (nuevaRuta, action) => {
   switch (action.type) {
     case 'create': {
@@ -99,11 +101,6 @@ const Rutas = ({}) => {
     retrieveInfo('puntos', setPuntos);
   }, []);
 
-  const todaysRoute = user.role == 0 &&
-  rutas.filter(({dia}) =>
-    moment().isSame(dia, 'day')
-  )[0];
-
   const nuevaRutaNombreInpt = nuevaRuta && <input type='text'
                    value={nuevaRuta.nombre}
                    onChange={e => dispatch({type: 'change_nombre',
@@ -150,9 +147,10 @@ const Rutas = ({}) => {
           <RutaPath
             key={i}
             nombre={
-              <div className="flex flex-nowrap justify-between">
+              <div className="flex flex-wrap justify-between">
                 <div>{ruta.ruta ? ruta.ruta.nombre : ruta.nombre}</div>
-                {ruta.dia && moment().isSame(ruta.dia, 'day') &&
+                {ruta.dia && moment().utc().add(TIMEZONE, 'hours')
+                  .isSame(ruta.dia, 'day') &&
                   <div className="text-2xl font-thin">Ruta de hoy</div>
                 }
                 {ruta.ruta
