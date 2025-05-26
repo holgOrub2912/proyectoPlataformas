@@ -5,6 +5,8 @@ import { useAuth } from './Auth'
 import moment from 'moment';
 import { DocumentCurrencyDollarIcon, PlusIcon } from '@heroicons/react/24/solid';
 
+const TIMEZONE = import.meta.env.VITE_TIMEZONE;
+
 const replace = (arr, index, by) => arr.map((e, i) => (i == index) ? by : e)
 const replace_attr = (arr, index, attr, by) =>
   replace(arr, index, {...arr[index], [attr]: by})
@@ -97,7 +99,7 @@ const GenerarComprobante = () => {
 
   useEffect(() => {
     retrieve_products();
-    const today = moment().format("YYYY-MM-DD")
+    const today = moment.utc().add(TIMEZONE, 'hours').format("YYYY-MM-DD")
     getInfo(`assignedRoutes/${user.id}/${today}`,
       ({puntos}) => setPuntos(puntos));
     }, []);
