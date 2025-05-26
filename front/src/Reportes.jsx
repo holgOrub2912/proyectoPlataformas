@@ -69,9 +69,6 @@ const Reportes = ({}) => {
 
   useEffect(() => {
     getInfo('comprobantes', setComprobantes, token)
-    getInfo('usuarios', usuarios => setDrivers(
-      usuarios.filter(({role}) => role == 0)
-    ));
   }, [token]);
 
   const days = gen_days(numberDays);
@@ -84,12 +81,16 @@ const Reportes = ({}) => {
   // console.log(numberDays)
 
   return <div>
-    <select value={numberDays} onChange={e => setNumberDays(e.target.value)}>
-      <option value={7}>Última semana</option>
-      <option value={30}>Último mes</option>
-    </select>
-    <div>
+    <div className="text-center">
+      <h2 className="inline mr-5 text-xl font-thin">Reportes del sistema</h2>
+      <select className="inline" value={numberDays} onChange={e => setNumberDays(e.target.value)}>
+        <option className="" value={7}>Última semana</option>
+        <option value={30}>Último mes</option>
+      </select>
+    </div>
+    <div className="flex flex-row flex-wrap items-center justify-center">
       <LineChart
+        className="border-gray-200 border-2 pt-5 m-5"
         width={600}
         height={400}
         data={dayData}
@@ -101,9 +102,10 @@ const Reportes = ({}) => {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Line type="monotone" dataKey="ventas" stroke="#8884d8" activeDot={{ r: 8 }} />
+        <Line type="monotone" dataKey="ventas" stroke="#A3E635" activeDot={{ r: 8 }} />
       </LineChart>
       <BarChart
+        className="border-gray-200 border-2 pt-5 m-5"
         width={600}
         height={400}
         data={driverData}
@@ -115,11 +117,12 @@ const Reportes = ({}) => {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar type="monotone" dataKey="ventas" stroke="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue"/>} />
+        <Bar type="monotone" fill="#A3E635" dataKey="ventas" activeBar={<Rectangle fill="black"/>} />
       </BarChart>
       <BarChart
         width={600}
         height={400}
+        className="border-gray-200 border-2 pt-5 m-5"
         data={puntosData}
         margin={{
           left: 30
@@ -129,7 +132,7 @@ const Reportes = ({}) => {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar type="monotone" dataKey="ventas" stroke="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue"/>} />
+        <Bar type="monotone" fill="#A3E635" dataKey="ventas" activeBar={<Rectangle fill="black"/>} />
       </BarChart>
     </div>
   </div>;
